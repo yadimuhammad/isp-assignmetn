@@ -6,7 +6,11 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+.settings/*
+.vscode/*
+.classpath
+.project
 .mvn/timing.properties
-
+file-input.txt
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
