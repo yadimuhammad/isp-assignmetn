@@ -2,15 +2,11 @@ package com.yadimr.app;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 /**
  * Hello world!
@@ -21,28 +17,66 @@ public class App {
     private static String[][] bookShelf = new String[0][3];
     private static String inputs = null;
     private static int len = 0;
+    private static PrintStream console = System.out;
+    
 
     public static void main(String[] args) throws IOException
     {
         scan = new Scanner(System.in);
-        while(!(inputs = scan.nextLine()).equals("exit")){
-            if(inputs.substring(0,1).equals("c")){
-                String[] BookSlothNew = inputs.split(" ");
-                int bookSlots = Integer.parseInt(BookSlothNew[1]);
-                createBookShelf(bookSlots);
+        if(args.length>0){
+            File f = new File(args[0]);
+            BufferedReader b = new BufferedReader(new FileReader(f));
+            // String inputs ="";
+            File fo = new File("file-out.txt");
+            FileOutputStream fos = new FileOutputStream(fo);
+            PrintStream ps = new PrintStream(fo);
+            while((inputs = b.readLine()) != null){
+                System.out.println(inputs);
                 
-            }else if (inputs.substring(0,3).equals("put")){
-                putBook();
-            }else if(inputs.substring(0,4).equals("list")){
-                listAll();
-            }else if (inputs.substring(0,3).equals("rem")){
-                rmvBook();
-            }else if(inputs.substring(0,3).equals("fin")){
-                findAuthor();
-            }else if(inputs.substring(0,3).equals("tit")){
-                findTitles();
+                // System.setOut(ps);
+
+                if(inputs.substring(0,1).equals("c")){
+                    String[] BookSlothNew = inputs.split(" ");
+                    int bookSlots = Integer.parseInt(BookSlothNew[1]);
+                    createBookShelf(bookSlots);
+                    
+                }else if (inputs.substring(0,3).equals("put")){
+                    System.setOut(ps);
+                    putBook();
+                }else if(inputs.substring(0,4).equals("list")){
+                    System.setOut(ps);
+                    listAll();
+                }else if (inputs.substring(0,3).equals("rem")){
+                    System.setOut(ps);
+                    rmvBook();
+                }else if(inputs.substring(0,3).equals("fin")){
+                    System.setOut(ps);
+                    findAuthor();
+                }else if(inputs.substring(0,3).equals("tit")){
+                    System.setOut(ps);
+                    findTitles();
+                }
             }
-            
+        }else {
+            while(!(inputs = scan.nextLine()).equals("exit")){
+                if(inputs.substring(0,1).equals("c")){
+                    String[] BookSlothNew = inputs.split(" ");
+                    int bookSlots = Integer.parseInt(BookSlothNew[1]);
+                    createBookShelf(bookSlots);
+                    
+                }else if (inputs.substring(0,3).equals("put")){
+                    putBook();
+                }else if(inputs.substring(0,4).equals("list")){
+                    listAll();
+                }else if (inputs.substring(0,3).equals("rem")){
+                    rmvBook();
+                }else if(inputs.substring(0,3).equals("fin")){
+                    findAuthor();
+                }else if(inputs.substring(0,3).equals("tit")){
+                    findTitles();
+                }
+                
+            }
         }
     }
 
@@ -84,6 +118,7 @@ public class App {
         }else{
             System.out.println("Allocated Slot number:"+slot);
         }
+        System.setOut(console);
     }
     private static void rmvBook(){
         String[] slots = inputs.split(" ");
@@ -94,6 +129,7 @@ public class App {
                 System.out.println("Slot Number "+slots[1]+" is free");
             }
         }
+        System.setOut(console);
     }
     private static void listAll(){
         String leftAlignFormat = "| %-10s | %-35s | %-17s |%n";
@@ -107,6 +143,7 @@ public class App {
             }
         }    
         System.out.format("+------------+-------------------------------------+-------------------+%n");
+        System.setOut(console);
     }
     private static void findAuthor(){
         String[] author = inputs.split(" ");
@@ -128,19 +165,29 @@ public class App {
                 default:
                     break;
             }
+            System.setOut(console);
     }
     private static void findTitles(){
         String[] author = inputs.split(" ");
             switch (author[0]) {
                 case "titles-by-author":
+                String status = "";
+                int trigger = 0;
                     for (int i = 0; i < len; i++) {
                         if(bookShelf[i][2].equals(author[1])){
                             System.out.println(bookShelf[i][1]);
+                            trigger = 1;
+                        }else {
+                            status = "Not Found";
                         }
+                    }
+                    if(trigger == 0){
+                        System.out.println(status);
                     }
                     break;
                 default:
                     break;
             }
+            System.setOut(console);
     }
 }
